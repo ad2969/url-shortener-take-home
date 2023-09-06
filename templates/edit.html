@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="flex-1 mt-32">
+    <div class="flex flex-col flex-wrap container px-5 py-10 space-y-4 mx-auto text-gray-700 bg-gray-50 rounded-xl shadow-lg">
+
+        <div class="py-4 text-center tracking-wide text-2xl font-bold">Use your pin to edit your existing short url.</div>
+
+        <form method="post" class="flex flex-col justify-between">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="flex flex-col w-full space-y-2">
+                <div class="w-full mb-2">
+                    <div class="py-4">
+                        <div class="flex flex-col md:flex-row justify-between items-center space-x-2 text-sm font-mono">
+                            {% if pin_ok %}
+                            <input class="flex-1 w-full bg-gray-100 p-1 rounded border" id="shortUrl" value="{{short_url}}" name="short_url" type='text' readonly/>
+                            <div class="flex mt-4 md:mt-0 space-x-2">
+                                <!-- <button class="border px-2 py-1 rounded transform hover:scale-110 transition duration-150 ease-in-out" onclick="copyText()">Copy</button> -->
+                                <a class="border px-2 py-1 rounded transform hover:scale-110 transition duration-150 ease-in-out" target="blank" href="{{short_url}}">Go to page</a>
+                            </div>
+                            {% else %}
+                            <input
+                                id="shortUrl"
+                                name="short_url"
+                                value="{{form.short_url.value}}"
+                                type='text'
+                                class="flex-1 w-full bg-gray-100 rounded border focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none px-2 py-1 leading-8 transition-colors duration-200 ease-in-out"
+                                placeholder="Short url or Hash"
+                            />
+                            {% endif %}
+                        </div>
+                        <span class="text-xs text-red-400">{{ form.short_url.errors }}</span>
+                    </div>
+                    <input
+                        id='PIN'
+                        required
+                        placeholder="Enter Pin"
+                        value="{{ form.pin.value }}"
+                        type="password"
+                        pattern="[0-9]*" inputmode="numeric"
+                        name="pin"
+                        class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                        {% if pin_ok %}readonly{% endif %}
+                    >
+                    <span class="text-xs text-red-400">{{ form.pin.errors }}</span>
+                </div>
+                
+                {% if pin_ok %}
+                <input id="PIN-check" name="pincheck" hidden type="checkbox" checked />
+                <hr/>
+
+                <div>Destination URL: </div>
+                <input class="flex-1 w-full bg-gray-100 p-1 rounded border" id="URL" name="url" value="{{url}}" type='text'/>
+                <span class="text-xs text-red-400">{{ form.url.errors }}</span>
+                <div class="flex mt-4 md:mt-0 space-x-2">
+                    <button
+                        id="save"
+                        onclick="setLoading()"
+                        type="submit"
+                        class="transform hover:scale-110 transition duration-150 ease-in-out shadow-md flex font-bold mx-auto mt-8 border py-2 px-8 focus:outline-none hover:bg-gray-100 rounded text-xs">
+                            Save Destination URL
+                    </button>
+                </div>
+                {% else %}
+                <input id="PIN-check" name="pincheck" hidden type="checkbox" />
+                <div class="flex flex-col md:flex-row justify-between items-center space-x-2 rounded-lg text-sm font-mono">
+                    <button
+                        id="submit-pin"
+                        onclick="setPinLoading()"
+                        type="submit"
+                        class="transform hover:scale-110 transition duration-150 ease-in-out shadow-md flex font-bold mx-auto border py-2 px-8 focus:outline-none hover:bg-gray-100 rounded text-xs">
+                            Submit Pin
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    function setLoading() {
+      let url = document.getElementById("URL");
+      if (url.value) {
+        document.getElementById("save").innerHTML = "Loading...";
+      }
+    }
+
+    function setPinLoading() {
+      let url = document.getElementById("URL");
+      if (url.value) {
+        document.getElementById("submit-pin").innerHTML = "Loading...";
+      }
+    }
+</script>
+{% endblock content %}

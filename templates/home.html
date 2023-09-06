@@ -5,15 +5,17 @@
 <div class="flex-1 mt-32">
     <div class="flex flex-col flex-wrap container px-5 py-10 space-y-4 mx-auto text-gray-700 bg-gray-50 rounded-xl shadow-lg">
         
-        {% if messages %}
+        <!-- Used form error messages instead for consistency, comment out until needed -->
+        <!-- {% if messages %}
         <div class="text-sm text-center bg-red-100 rounded-2xl px-4 py-2">
             {% for message in messages %}
             <div>{{ message }}</div>
             {% endfor %}
         </div>
-        {% endif %}
+        {% endif %} -->
 
-        <div class="py-4 text-center tracking-wide text-2xl font-bold">Generate a random short url or provide a custom hash.</div>
+        <div class="pt-4 text-center tracking-wide text-2xl font-bold">Generate a random short url or provide a custom hash.</div>
+        <div class="pb-4 text-center tracking-wide font-bold">Have a pin? Edit your short url <a href="/edit" class="text-blue-600">here</a></div>
 
         <form method="post" class="flex flex-col justify-between">
             {% csrf_token %}
@@ -35,7 +37,7 @@
                 <div class="w-full">
                     <input
                         maxlength="10"
-                        placeholder="Custom hash (optional) - <not implemented>"
+                        placeholder="Custom hash (optional)"
                         value="{{ form.hashed_url.value }}"
                         type="text" id="hashed_url" name="hashed_url"
                         class="flex-1 mb-1 w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500  focus:ring-2 focus:ring-indigo-200 outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -61,12 +63,29 @@
             </div>
         </div>
         {% endif %}
+
+        {% if pin %}
+        <div>This pin can be used to edit your URL in the future. It will only be shown once.</div>
+        <div class="flex flex-col md:flex-row justify-between items-center pb-4 space-x-2 rounded-lg px-2 text-sm font-mono">
+            <input class="flex-1 w-full bg-gray-100 p-1 rounded border" id="pin" value="{{pin}}" type='text' readonly/>
+            <div class="flex mt-4 md:mt-0 space-x-2">
+                <button class="border px-2 py-1 rounded transform hover:scale-110 transition duration-150 ease-in-out" onclick="copyPin()">Copy</button>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 
 <script type="text/javascript">
     function copyText() {
       let copyText = document.getElementById("shortUrl");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+    }
+    function copyPin() {
+      let copyText = document.getElementById("pin");
       copyText.select();
       copyText.setSelectionRange(0, 99999);
       document.execCommand("copy");

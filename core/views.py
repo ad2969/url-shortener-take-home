@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -5,6 +6,9 @@ from core.models import Url
 from core.forms import CreateUrlForm, EditUrlForm
 from core.generators import generate_pin_and_hash, convert_pin_to_hash
 
+
+# reserved words based on used url and existing API
+RESERVED_WORDS_REGEX = r"^((edit)|(api(\/.*)?))$"
 
 class CreateUrlView(View):
     template_name = "home.html"
@@ -19,6 +23,11 @@ class CreateUrlView(View):
 
         url = form.cleaned_data.get("url")
         hashed_url = form.cleaned_data.get("hashed_url")
+
+        # check if hashed_url is a reserved word
+        if hashed_url and re.search(RESERVED_WORDS_REGEX, hashed_url):
+            form.add_error("hashed_url", "Sorry! Cannot use that hash because it is a reserved word")
+            return render(request, self.template_name, {"form": form})
 
         # check for existing hashed_url (FEATURE 2)
         if hashed_url and Url.objects.filter(hashed_url=hashed_url).exists():

@@ -25,7 +25,11 @@ class HomeView(View):
 
 # URL Redirecter (FEATURE 1)
 class UrlRedirectView(View):
+    # Alternatively, instead of having the custom "redirect.html" redirect and "404.html" page,
+    # we can use the Django-provided Redirect View
+    # https://docs.djangoproject.com/en/4.2/ref/class-based-views/base/#redirectview
     template_404 = "404.html"
+    template_redirect = "redirect.html"
 
     def get(self, request, *args, **kwargs):
         try:
@@ -33,6 +37,7 @@ class UrlRedirectView(View):
             hashed_url = kwargs["hashed_url"]
             destination = Url.objects.get(hashed_url=hashed_url) # will raise NotFound exception if row doesn't exist
 
-            return redirect(destination.url)
+            # return redirect(destination.url) -- default behaviour, before improvement and adding "redirect.html"
+            return render(request, self.template_redirect, context={"url": destination.url})
         except:
             return render(request, self.template_404)

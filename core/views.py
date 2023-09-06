@@ -3,6 +3,7 @@ from django.views import View
 
 from core.models import Url
 from core.forms import UrlForm
+from core.generators import generate_pin_and_hash
 
 
 class HomeView(View):
@@ -26,10 +27,12 @@ class HomeView(View):
 
         # TODO (future feature): return the existing hashed_url if one already points to the given url
 
-        obj = Url.objects.create(url=url, hashed_url=hashed_url)
+        # Pin Creation (BONUS FEATURE)
+        pincode, pincode_hash = generate_pin_and_hash()
+        obj = Url.objects.create(url=url, hashed_url=hashed_url, hashed_pin=pincode_hash)
 
         return render(
-            request, self.template_name, {"short_url": obj.get_full_short_url()}
+            request, self.template_name, {"short_url": obj.get_full_short_url(), "pin": pincode}
         )
 
 # URL Redirecter (FEATURE 1)

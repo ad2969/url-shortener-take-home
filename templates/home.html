@@ -62,12 +62,29 @@
             </div>
         </div>
         {% endif %}
+
+        {% if pin %}
+        <div>This pin can be used to edit your URL in the future. It will only be shown once.</div>
+        <div class="flex flex-col md:flex-row justify-between items-center pb-4 space-x-2 rounded-lg px-2 text-sm font-mono">
+            <input class="flex-1 w-full bg-gray-100 p-1 rounded border" id="pin" value="{{pin}}" type='text' readonly/>
+            <div class="flex mt-4 md:mt-0 space-x-2">
+                <button class="border px-2 py-1 rounded transform hover:scale-110 transition duration-150 ease-in-out" onclick="copyPin()">Copy</button>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 
 <script type="text/javascript">
     function copyText() {
       let copyText = document.getElementById("shortUrl");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+    }
+    function copyPin() {
+      let copyText = document.getElementById("pin");
       copyText.select();
       copyText.setSelectionRange(0, 99999);
       document.execCommand("copy");

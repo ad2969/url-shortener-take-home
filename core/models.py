@@ -4,7 +4,7 @@ from core.generators import generate_hash_url
 
 class Url(models.Model):
     url = models.URLField(max_length=255)
-    hashed_url = models.CharField(max_length=10, blank=True)
+    hashed_url = models.CharField(max_length=10, unique=True, db_index=True)
     hashed_pin = models.CharField(max_length=255)
 
     def __str__(self):

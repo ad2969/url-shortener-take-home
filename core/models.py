@@ -12,8 +12,18 @@ class Url(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.hashed_url:
-            self.hashed_url = self.hash_url()
+            self.hashed_url = self.get_unique_hash()
         super().save(*args, **kwargs)
+
+    # since the hashing function is not actually dependent on the given destination url
+    # use this function to ensure that a unique hash is obtained
+    def get_unique_hash(self):
+        new_hash = self.hash_url()
+        # repeat "hash_url" function until a unique hash is obtained
+        while Url.objects.filter(hashed_url=new_hash).exists():
+           new_hash = self.hash_url()
+
+        return new_hash
 
     def hash_url(self):
         token = secrets.token_urlsafe(16)[:10]

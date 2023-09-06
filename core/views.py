@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from core.models import Url
@@ -22,3 +22,17 @@ class HomeView(View):
         return render(
             request, self.template_name, {"short_url": obj.get_full_short_url()}
         )
+
+# URL Redirecter (FEATURE 1)
+class UrlRedirectView(View):
+    template_404 = "404.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            if not "hashed_url" in kwargs: raise Exception()
+            hashed_url = kwargs["hashed_url"]
+            destination = Url.objects.get(hashed_url=hashed_url) # will raise NotFound exception if row doesn't exist
+
+            return redirect(destination.url)
+        except:
+            return render(request, self.template_404)

@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views import HomeView, UrlRedirectView
+from .views import CreateUrlView, EditUrlView, UrlRedirectView
 
 
 urlpatterns = [
-    path("", HomeView.as_view(), name="home_page"),
+    path("", CreateUrlView.as_view(), name="home_page"),
+    path("edit/", EditUrlView.as_view(), name="edit_page"),
     path("<slug:hashed_url>/", UrlRedirectView.as_view(), name="url_redirecter")
 ]

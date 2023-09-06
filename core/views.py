@@ -17,7 +17,16 @@ class HomeView(View):
             return render(request, self.template_name, {"form": form})
 
         url = form.cleaned_data.get("url")
-        obj = Url.objects.create(url=url)
+        hashed_url = form.cleaned_data.get("hashed_url")
+
+        # check for existing hashed_url (FEATURE 2)
+        if hashed_url and Url.objects.filter(hashed_url=hashed_url).exists():
+            form.add_error("hashed_url", "Sorry! That specified hash is already being used! Remove custom hash or enter a different one")
+            return render(request, self.template_name, {"form": form})
+
+        # TODO (future feature): return the existing hashed_url if one already points to the given url
+
+        obj = Url.objects.create(url=url, hashed_url=hashed_url)
 
         return render(
             request, self.template_name, {"short_url": obj.get_full_short_url()}

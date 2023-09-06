@@ -5,13 +5,14 @@
 <div class="flex-1 mt-32">
     <div class="flex flex-col flex-wrap container px-5 py-10 space-y-4 mx-auto text-gray-700 bg-gray-50 rounded-xl shadow-lg">
         
-        {% if messages %}
+        <!-- Used form error messages instead for consistency, comment out until needed -->
+        <!-- {% if messages %}
         <div class="text-sm text-center bg-red-100 rounded-2xl px-4 py-2">
             {% for message in messages %}
             <div>{{ message }}</div>
             {% endfor %}
         </div>
-        {% endif %}
+        {% endif %} -->
 
         <div class="py-4 text-center tracking-wide text-2xl font-bold">Generate a random short url or provide a custom hash.</div>
 
@@ -35,7 +36,7 @@
                 <div class="w-full">
                     <input
                         maxlength="10"
-                        placeholder="Custom hash (optional) - <not implemented>"
+                        placeholder="Custom hash (optional)"
                         value="{{ form.hashed_url.value }}"
                         type="text" id="hashed_url" name="hashed_url"
                         class="flex-1 mb-1 w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500  focus:ring-2 focus:ring-indigo-200 outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
